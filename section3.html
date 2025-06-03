@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Анкета IT-компании — Секция 3</title>
+
+  <!-- Tailwind (darkMode = class) -->
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {} }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Никаких @apply */
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+  <!-- Шапка -->
+  <header class="flex justify-between items-center max-w-3xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Анкета IT-компании (Секция 3)</h1>
+    <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition duration-200" aria-label="Переключить тему">
+      <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500 dark:text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 3v1m0 16v1m8.66-8.66h-1M4.34 12.34h-1M17.657 6.343l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z" />
+      </svg>
+    </button>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 space-y-8">
+    <!-- Прогресс (вопросы 21–30) -->
+    <section class="mb-6">
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-medium text-gray-700 dark:text-gray-300">Прогресс (вопросы 21–30)</span>
+        <span id="progressText" class="text-sm font-semibold text-gray-700 dark:text-gray-300">0% заполнено</span>
+      </div>
+      <div class="relative w-full h-4 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden">
+        <div id="progressBar" class="absolute left-0 top-0 h-full bg-blue-600 dark:bg-blue-400 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
+      </div>
+    </section>
+
+    <!-- Форма: вопросы 21–30 -->
+    <form id="surveyForm" class="space-y-8">
+      <!-- Вопрос 21 (Radio) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">21. Какую ОС вы предпочитаете для разработки?</legend>
+        <div class="flex flex-col space-y-2">
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q21" value="windows" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Windows</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q21" value="macos" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">macOS</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q21" value="linux" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Linux</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Вопрос 22 (Checkbox) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">22. Какие IDE/редакторы вы знаете (более 2)?</legend>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q22" value="vscode" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">VS Code</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q22" value="intellij" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">IntelliJ IDEA</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q22" value="pycharm" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">PyCharm</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q22" value="webstorm" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">WebStorm</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Вопрос 23 (Text) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">23. Какие базы данных вы развертывали самостоятельно?</legend>
+        <textarea
+          name="q23"
+          rows="3"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded-md p-3 bg-white dark:bg-gray-900 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition duration-200"
+          placeholder="Например: PostgreSQL на Ubuntu..."
+        ></textarea>
+      </fieldset>
+
+      <!-- Вопрос 24 (Radio) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">24. Какой фреймворк вы используете для тестирования?</legend>
+        <div class="flex flex-col space-y-2">
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q24" value="jest" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Jest</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q24" value="mocha" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Mocha</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q24" value="pytest" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Pytest</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Вопрос 25 (Checkbox) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">25. Какие задачи вы автоматизировали (CI/CD, deploy, тестирование и т.д.)?</legend>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q25" value="ciAutomation" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">CI/CD Автоматизация</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q25" value="deployScripts" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Скрипты деплоя</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q25" value="testAutomation" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Автотесты</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q25" value="infraAutomation" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Инфраструктура как код</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Вопрос 26 (Text) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">26. Какие метрики приложения вы отслеживаете (например, время отклика, нагрузка и т.д.)?</legend>
+        <textarea
+          name="q26"
+          rows="3"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded-md p-3 bg-white dark:bg-gray-900 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition duration-200"
+          placeholder="Например: Среднее время отклика API 200 ms..."
+        ></textarea>
+      </fieldset>
+
+      <!-- Вопрос 27 (Radio) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">27. Вы используете облачные функции (Lambda, Functions и т.д.)?</legend>
+        <div class="flex flex-col space-y-2">
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q27" value="yes" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Да</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q27" value="no" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Нет</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Вопрос 28 (Checkbox) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">28. Какие облачные хранилища вы использовали?</legend>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q28" value="s3" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">AWS S3</span>
+          </label>
+          <label class="flex items-center cursor-pointer">  
+            <input type="checkbox" name="q28" value="gcs" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Google Cloud Storage</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q28" value="azureBlob" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Azure Blob Storage</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" name="q28" value="yandexCloud" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Yandex Cloud Object Storage</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Вопрос 29 (Text) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">29. Опишите ваш опыт с кешированием (Redis, Memcached и т.д.):</legend>
+        <textarea
+          name="q29"
+          rows="3"
+          class="w-full border border-gray-300 dark:border-gray-600 rounded-md p-3 bg-white dark:bg-gray-900 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400 transition duration-200"
+          placeholder="Например: Redis Cluster, TTL, LRU..."
+        ></textarea>
+      </fieldset>
+
+      <!-- Вопрос 30 (Radio) -->
+      <fieldset class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow" data-question>
+        <legend class="font-semibold text-gray-800 dark:text-gray-200 mb-3">30. Хотели бы вы пройти дополнительное обучение/сертификацию по DevOps?</legend>
+        <div class="flex flex-col space-y-2">
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q30" value="yesTraining" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Да, планирую</span>
+          </label>
+          <label class="flex items-center cursor-pointer">
+            <input type="radio" name="q30" value="noTraining" class="mr-3 w-5 h-5 text-blue-600 dark:bg-gray-700" />
+            <span class="text-gray-800 dark:text-gray-100">Нет, достаточно умений</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Навигация: Назад и Завершить -->
+      <div class="flex justify-between">
+        <a href="section2.html" class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200">&laquo; Назад</a>
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-200">
+          Завершить анкету
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <!-- Скрипт темы и прогресса -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Переключение темы
+      const themeToggle = document.getElementById('themeToggle');
+      const htmlEl = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+
+      if (
+        localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        htmlEl.classList.add('dark');
+      } else {
+        htmlEl.classList.remove('dark');
+      }
+
+      function updateIcon() {
+        if (htmlEl.classList.contains('dark')) {
+          themeIcon.classList.remove('text-yellow-500');
+          themeIcon.classList.add('text-yellow-300');
+        } else {
+          themeIcon.classList.remove('text-yellow-300');
+          themeIcon.classList.add('text-yellow-500');
+        }
+      }
+      updateIcon();
+
+      themeToggle.addEventListener('click', function () {
+        htmlEl.classList.toggle('dark');
+        if (htmlEl.classList.contains('dark')) {
+          localStorage.theme = 'dark';
+        } else {
+          localStorage.theme = 'light';
+        }
+        updateIcon();
+      });
+
+      // Прогресс-бар (вопросы 21–30)
+      const form = document.getElementById('surveyForm');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const questions = document.querySelectorAll('[data-question]');
+
+      function isAnswered(fieldset) {
+        const inputs = fieldset.querySelectorAll('input');
+        for (let inp of inputs) {
+          if ((inp.type === 'radio' || inp.type === 'checkbox') && inp.checked) {
+            return true;
+          }
+        }
+        const textarea = fieldset.querySelector('textarea');
+        if (textarea && textarea.value.trim() !== '') {
+          return true;
+        }
+        return false;
+      }
+
+      function updateProgress() {
+        let answeredCount = 0;
+        questions.forEach(q => {
+          if (isAnswered(q)) answeredCount++;
+        });
+        const total = questions.length;
+        const percent = total > 0 ? Math.round((answeredCount / total) * 100) : 0;
+        progressBar.style.width = percent + '%';
+        progressText.textContent = percent + '% заполнено';
+      }
+
+      form.addEventListener('change', updateProgress);
+      form.addEventListener('input', updateProgress);
+      updateProgress();
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        alert('Анкета завершена! Спасибо за ответы.');
+        // Здесь можно добавить отправку данных на сервер
+      });
+    });
+  </script>
+</body>
+</html>

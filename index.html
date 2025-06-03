@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Анкета пользователя</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#F59E0B',
+            'primary-dark': '#D97706'
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
+<div class="max-w-2xl mx-auto p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Анкета пользователя</h1>
+    <button onclick="toggleTheme()" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition">
+      Переключить тему
+    </button>
+  </div>
+
+  <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-4 mb-6">
+    <div id="progressBar" class="bg-primary h-4 rounded-full" style="width: 0%"></div>
+  </div>
+
+  <form id="surveyForm">
+    <div id="sectionHeader" class="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Секция 1 из 3
+    </div>
+    <div id="stepContainer"></div>
+    <div class="flex justify-between mt-4">
+      <button type="button" onclick="prevStep()" id="prevBtn" class="bg-gray-500 text-white px-4 py-2 rounded hidden hover:bg-gray-600 transition">
+        Назад
+      </button>
+      <button type="button" onclick="nextStep()" id="nextBtn" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition">
+        Далее
+      </button>
+      <button type="submit" id="submitBtn" class="bg-green-600 text-white px-4 py-2 rounded hidden hover:bg-green-700 transition">
+        Отправить
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('surveyForm');
+  const stepContainer = document.getElementById('stepContainer');
+  const progressBar = document.getElementById('progressBar');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const sectionHeader = document.getElementById('sectionHeader');
+
+  // 30 вопросов: 6 текстовых, 24 с выбором.
+  const questions = [
+    { text: '1. Ваш пол?', type: 'single', options: ['Мужской', 'Женский', 'Другой'] },
+    { text: '2. Ваш возраст?', type: 'single', options: ['до 18', '18–25', '26–35', '36–50', 'старше 50'] },
+    { text: '3. Ваш уровень образования?', type: 'text' },
+    { text: '4. Вы курите?', type: 'single', options: ['Да', 'Нет', 'Бросаю'] },
+    { text: '5. Как часто занимаетесь спортом?', type: 'single', options: ['Каждый день', 'Несколько раз в неделю', 'Несколько раз в месяц', 'Редко'] },
+    { text: '6. Какой у вас тип питания?', type: 'text' },
+    { text: '7. Уровень стресса в вашей жизни?', type: 'single', options: ['Низкий', 'Средний', 'Высокий'] },
+    { text: '8. Есть ли у вас хронические заболевания?', type: 'multiple', options: ['Сердечно-сосудистые', 'Диабет', 'Астма', 'Нет'] },
+    { text: '9. Сколько часов вы спите в среднем?', type: 'text' },
+    { text: '10. Как вы оцениваете своё общее самочувствие?', type: 'single', options: ['Отлично', 'Хорошо', 'Удовлетворительно', 'Плохо'] },
+    { text: '11. Какая у вас должность?', type: 'single', options: ['Junior Developer', 'Middle Developer', 'Senior Developer', 'Team Lead', 'Менеджер'] },
+    { text: '12. В какой компании вы работаете?', type: 'text' },
+    { text: '13. Сколько лет вы работаете в IT?', type: 'text' },
+    { text: '14. Какой стек технологий используете?', type: 'multiple', options: ['JavaScript/TypeScript', 'Python', 'Java', 'C#', 'Go', 'Ruby'] },
+    { text: '15. Ваш опыт с JavaScript (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
+    { text: '16. Ваш опыт с Python (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
+    { text: '17. Ваш опыт с Java (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
+    { text: '18. Ваш опыт с C# (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
+    { text: '19. Ваш опыт с Go (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
+    { text: '20. Предпочитаемые базы данных?', type: 'multiple', options: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'SQLite', 'Oracle'] },
+    { text: '21. Опыт с облачными провайдерами (AWS, GCP, Azure)?', type: 'text' },
+    { text: '22. Есть ли у вас опыт с Docker?', type: 'single', options: ['Да', 'Нет'] },
+    { text: '23. Есть ли у вас опыт с Kubernetes?', type: 'single', options: ['Да', 'Нет'] },
+    { text: '24. Используете CI/CD?', type: 'multiple', options: ['Jenkins', 'GitLab CI', 'GitHub Actions', 'CircleCI', 'Travis CI'] },
+    { text: '25. Занимаетесь ли вы DevOps-практиками?', type: 'single', options: ['Да', 'Нет'] },
+    { text: '26. Оцениваете ли вы качество кода?', type: 'multiple', options: ['Code Review', 'Unit Tests', 'Linting', 'Static Analysis', 'Нет'] },
+    { text: '27. Как часто вы пишете unit-тесты?', type: 'single', options: ['Каждый день', 'Несколько раз в неделю', 'Редко', 'Никогда'] },
+    { text: '28. Опыт с инструментами мониторинга?', type: 'multiple', options: ['Prometheus', 'Grafana', 'Datadog', 'Zabbix', 'New Relic'] },
+    { text: '29. Опыт с кешированием (Redis, Memcached)?', type: 'text' },
+    { text: '30. Хотели бы вы пройти сертификацию по DevOps?', type: 'single', options: ['Да', 'Нет', 'Возможно'] }
+  ];
+
+  let currentStep = 0;
+  const responses = JSON.parse(localStorage.getItem('surveyData')) || {};
+
+  function renderStep() {
+    stepContainer.innerHTML = '';
+
+    // Определяем номер секции
+    const sectionNumber = Math.floor(currentStep / 10) + 1;
+    sectionHeader.textContent = `Секция ${sectionNumber} из 3`;
+
+    const { text, type, options } = questions[currentStep];
+
+    const fieldset = document.createElement('fieldset');
+    fieldset.className = 'mb-4';
+
+    const legend = document.createElement('legend');
+    legend.className = 'text-lg font-medium mb-2';
+    legend.textContent = text;
+    fieldset.appendChild(legend);
+
+    if (type === 'text') {
+      const textarea = document.createElement('textarea');
+      textarea.rows = 3;
+      textarea.required = true;
+      textarea.name = `question_${currentStep}`;
+      textarea.placeholder = 'Введите ответ...';
+      textarea.value = responses[`question_${currentStep}`] || '';
+      textarea.className = 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-black dark:text-gray-100 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200';
+      textarea.oninput = (e) => {
+        responses[`question_${currentStep}`] = e.target.value;
+        localStorage.setItem('surveyData', JSON.stringify(responses));
+        updateProgress();
+      };
+      fieldset.appendChild(textarea);
+    }
+    else if (type === 'single') {
+      options.forEach((opt, idx) => {
+        const label = document.createElement('label');
+        label.className = 'flex items-center mb-2 cursor-pointer';
+
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = `question_${currentStep}`;
+        input.value = opt;
+        input.required = true;
+        input.checked = responses[`question_${currentStep}`] === opt;
+        input.className = 'mr-3 accent-primary';
+        input.onchange = (e) => {
+          responses[`question_${currentStep}`] = e.target.value;
+          localStorage.setItem('surveyData', JSON.stringify(responses));
+          updateProgress();
+        };
+
+        const span = document.createElement('span');
+        span.textContent = opt;
+        span.className = 'text-gray-800 dark:text-gray-100';
+
+        label.appendChild(input);
+        label.appendChild(span);
+        fieldset.appendChild(label);
+      });
+    }
+    else if (type === 'multiple') {
+      options.forEach((opt, idx) => {
+        const label = document.createElement('label');
+        label.className = 'flex items-center mb-2 cursor-pointer';
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.name = `question_${currentStep}_${idx}`;
+        input.value = opt;
+        input.checked = Array.isArray(responses[`question_${currentStep}`]) && responses[`question_${currentStep}`].includes(opt);
+        input.className = 'mr-3 accent-primary';
+        input.onchange = () => {
+          let arr = Array.isArray(responses[`question_${currentStep}`]) ? responses[`question_${currentStep}`] : [];
+          if (input.checked) {
+            arr.push(opt);
+          } else {
+            arr = arr.filter(v => v !== opt);
+          }
+          responses[`question_${currentStep}`] = arr;
+          localStorage.setItem('surveyData', JSON.stringify(responses));
+          updateProgress();
+        };
+
+        const span = document.createElement('span');
+        span.textContent = opt;
+        span.className = 'text-gray-800 dark:text-gray-100';
+
+        label.appendChild(input);
+        label.appendChild(span);
+        fieldset.appendChild(label);
+      });
+    }
+
+    stepContainer.appendChild(fieldset);
+
+    prevBtn.classList.toggle('hidden', currentStep === 0);
+    nextBtn.classList.toggle('hidden', currentStep === questions.length - 1);
+    submitBtn.classList.toggle('hidden', currentStep !== questions.length - 1);
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    let answeredCount = 0;
+    questions.forEach((q, idx) => {
+      const key = `question_${idx}`;
+      const resp = responses[key];
+      if (q.type === 'text' || q.type === 'single') {
+        if (resp && resp.toString().trim()) answeredCount++;
+      } else if (q.type === 'multiple') {
+        if (Array.isArray(resp) && resp.length > 0) answeredCount++;
+      }
+    });
+    const percent = Math.round((answeredCount / questions.length) * 100);
+    progressBar.style.width = percent + '%';
+  }
+
+  function nextStep() {
+    const currentKey = `question_${currentStep}`;
+    const currentQuestion = questions[currentStep];
+    if (currentQuestion.type === 'text') {
+      const textarea = stepContainer.querySelector(`[name="${currentKey}"]`);
+      if (!textarea.reportValidity()) return;
+    } else if (currentQuestion.type === 'single') {
+      const checked = stepContainer.querySelector(`input[name="${currentKey}"]:checked`);
+      if (!checked) {
+        alert('Пожалуйста, выберите один из вариантов.');
+        return;
+      }
+    } else { // multiple
+      const anyChecked = questions[currentStep].options.some((opt, i) =>
+              stepContainer.querySelector(`input[name="${currentKey}_${i}"]:checked`)
+      );
+      if (!anyChecked) {
+        alert('Пожалуйста, выберите хотя бы один вариант.');
+        return;
+      }
+    }
+    currentStep++;
+    renderStep();
+  }
+
+  function prevStep() {
+    currentStep--;
+    renderStep();
+  }
+
+  form.onsubmit = function(e) {
+    e.preventDefault();
+    const currentKey = `question_${currentStep}`;
+    const currentQuestion = questions[currentStep];
+    if (currentQuestion.type === 'text') {
+      const textarea = stepContainer.querySelector(`[name="${currentKey}"]`);
+      if (!textarea.reportValidity()) return;
+    } else if (currentQuestion.type === 'single') {
+      const checked = stepContainer.querySelector(`input[name="${currentKey}"]:checked`);
+      if (!checked) {
+        alert('Пожалуйста, выберите один из вариантов.');
+        return;
+      }
+    } else {
+      const anyChecked = questions[currentStep].options.some((opt, i) =>
+              stepContainer.querySelector(`input[name="${currentKey}_${i}"]:checked`)
+      );
+      if (!anyChecked) {
+        alert('Пожалуйста, выберите хотя бы один вариант.');
+        return;
+      }
+    }
+
+    console.log('Ответы анкеты:', responses);
+    alert('Спасибо за заполнение анкеты!');
+    localStorage.removeItem('surveyData');
+    form.reset();
+    currentStep = 0;
+    renderStep();
+  };
+
+  function toggleTheme() {
+    document.documentElement.classList.toggle('dark');
+  }
+
+  renderStep();
+</script>
+</body>
+</html>
