@@ -20,265 +20,227 @@
   </script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors">
-<div class="max-w-2xl mx-auto p-6">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">Анкета пользователя</h1>
-    <button onclick="toggleTheme()" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition">
-      Переключить тему
-    </button>
-  </div>
-
-  <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-4 mb-6">
-    <div id="progressBar" class="bg-primary h-4 rounded-full" style="width: 0%"></div>
-  </div>
-
-  <form id="surveyForm">
-    <div id="sectionHeader" class="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Секция 1 из 3
-    </div>
-    <div id="stepContainer"></div>
-    <div class="flex justify-between mt-4">
-      <button type="button" onclick="prevStep()" id="prevBtn" class="bg-gray-500 text-white px-4 py-2 rounded hidden hover:bg-gray-600 transition">
-        Назад
-      </button>
-      <button type="button" onclick="nextStep()" id="nextBtn" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition">
-        Далее
-      </button>
-      <button type="submit" id="submitBtn" class="bg-green-600 text-white px-4 py-2 rounded hidden hover:bg-green-700 transition">
-        Отправить
+  <div class="max-w-2xl mx-auto p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">Анкета пользователя</h1>
+      <button onclick="toggleTheme()" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition">
+        Переключить тему
       </button>
     </div>
-  </form>
-</div>
 
-<script>
-  const form = document.getElementById('surveyForm');
-  const stepContainer = document.getElementById('stepContainer');
-  const progressBar = document.getElementById('progressBar');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const sectionHeader = document.getElementById('sectionHeader');
+    <div class="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-4 mb-6">
+      <div id="progressBar" class="bg-primary h-4 rounded-full" style="width: 0%"></div>
+    </div>
 
-  // 30 вопросов: 6 текстовых, 24 с выбором.
-  const questions = [
-    { text: '1. Ваш пол?', type: 'single', options: ['Мужской', 'Женский', 'Другой'] },
-    { text: '2. Ваш возраст?', type: 'single', options: ['до 18', '18–25', '26–35', '36–50', 'старше 50'] },
-    { text: '3. Ваш уровень образования?', type: 'text' },
-    { text: '4. Вы курите?', type: 'single', options: ['Да', 'Нет', 'Бросаю'] },
-    { text: '5. Как часто занимаетесь спортом?', type: 'single', options: ['Каждый день', 'Несколько раз в неделю', 'Несколько раз в месяц', 'Редко'] },
-    { text: '6. Какой у вас тип питания?', type: 'text' },
-    { text: '7. Уровень стресса в вашей жизни?', type: 'single', options: ['Низкий', 'Средний', 'Высокий'] },
-    { text: '8. Есть ли у вас хронические заболевания?', type: 'multiple', options: ['Сердечно-сосудистые', 'Диабет', 'Астма', 'Нет'] },
-    { text: '9. Сколько часов вы спите в среднем?', type: 'text' },
-    { text: '10. Как вы оцениваете своё общее самочувствие?', type: 'single', options: ['Отлично', 'Хорошо', 'Удовлетворительно', 'Плохо'] },
-    { text: '11. Какая у вас должность?', type: 'single', options: ['Junior Developer', 'Middle Developer', 'Senior Developer', 'Team Lead', 'Менеджер'] },
-    { text: '12. В какой компании вы работаете?', type: 'text' },
-    { text: '13. Сколько лет вы работаете в IT?', type: 'text' },
-    { text: '14. Какой стек технологий используете?', type: 'multiple', options: ['JavaScript/TypeScript', 'Python', 'Java', 'C#', 'Go', 'Ruby'] },
-    { text: '15. Ваш опыт с JavaScript (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
-    { text: '16. Ваш опыт с Python (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
-    { text: '17. Ваш опыт с Java (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
-    { text: '18. Ваш опыт с C# (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
-    { text: '19. Ваш опыт с Go (лет)?', type: 'single', options: ['Нет опыта', '1–2', '3–5', '6 и более'] },
-    { text: '20. Предпочитаемые базы данных?', type: 'multiple', options: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'SQLite', 'Oracle'] },
-    { text: '21. Опыт с облачными провайдерами (AWS, GCP, Azure)?', type: 'text' },
-    { text: '22. Есть ли у вас опыт с Docker?', type: 'single', options: ['Да', 'Нет'] },
-    { text: '23. Есть ли у вас опыт с Kubernetes?', type: 'single', options: ['Да', 'Нет'] },
-    { text: '24. Используете CI/CD?', type: 'multiple', options: ['Jenkins', 'GitLab CI', 'GitHub Actions', 'CircleCI', 'Travis CI'] },
-    { text: '25. Занимаетесь ли вы DevOps-практиками?', type: 'single', options: ['Да', 'Нет'] },
-    { text: '26. Оцениваете ли вы качество кода?', type: 'multiple', options: ['Code Review', 'Unit Tests', 'Linting', 'Static Analysis', 'Нет'] },
-    { text: '27. Как часто вы пишете unit-тесты?', type: 'single', options: ['Каждый день', 'Несколько раз в неделю', 'Редко', 'Никогда'] },
-    { text: '28. Опыт с инструментами мониторинга?', type: 'multiple', options: ['Prometheus', 'Grafana', 'Datadog', 'Zabbix', 'New Relic'] },
-    { text: '29. Опыт с кешированием (Redis, Memcached)?', type: 'text' },
-    { text: '30. Хотели бы вы пройти сертификацию по DevOps?', type: 'single', options: ['Да', 'Нет', 'Возможно'] }
-  ];
+    <form id="surveyForm">
+      <div id="sectionHeader" class="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-200">
+        Загрузка...
+      </div>
+      <div id="stepContainer"></div>
+      <div class="flex justify-between mt-4">
+        <button type="button" id="prevBtn" class="bg-gray-500 text-white px-4 py-2 rounded hidden hover:bg-gray-600 transition">
+          Назад
+        </button>
+        <button type="button" id="nextBtn" class="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition">
+          Далее
+        </button>
+        <button type="submit" id="submitBtn" class="bg-green-600 text-white px-4 py-2 rounded hidden hover:bg-green-700 transition">
+          Отправить
+        </button>
+      </div>
+    </form>
+  </div>
 
-  let currentStep = 0;
-  const responses = JSON.parse(localStorage.getItem('surveyData')) || {};
+  <script>
+    const API = 'http://localhost:3000';
+    const form = document.getElementById('surveyForm');
+    const stepContainer = document.getElementById('stepContainer');
+    const progressBar = document.getElementById('progressBar');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const sectionHeader = document.getElementById('sectionHeader');
 
-  function renderStep() {
-    stepContainer.innerHTML = '';
+    let questions = [];
+    let currentStep = -1;          // -1 — ввод имени
+    let userName = '';
+    const responses = {};
 
-    // Определяем номер секции
-    const sectionNumber = Math.floor(currentStep / 10) + 1;
-    sectionHeader.textContent = `Секция ${sectionNumber} из 3`;
+    // Загрузка вопросов с сервера
+    async function loadQuestions() {
+  try {
+    const res = await fetch(`${API}/questions`);
+    if (!res.ok) throw new Error();
+    questions = await res.json();
+    renderStep();
+  } catch {
+    alert('Не удалось загрузить вопросы. Проверь сервер.');
+  }
+}
 
-    const { text, type, options } = questions[currentStep];
-
-    const fieldset = document.createElement('fieldset');
-    fieldset.className = 'mb-4';
-
-    const legend = document.createElement('legend');
-    legend.className = 'text-lg font-medium mb-2';
-    legend.textContent = text;
-    fieldset.appendChild(legend);
-
-    if (type === 'text') {
-      const textarea = document.createElement('textarea');
-      textarea.rows = 3;
-      textarea.required = true;
-      textarea.name = `question_${currentStep}`;
-      textarea.placeholder = 'Введите ответ...';
-      textarea.value = responses[`question_${currentStep}`] || '';
-      textarea.className = 'w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded text-black dark:text-gray-100 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200';
-      textarea.oninput = (e) => {
-        responses[`question_${currentStep}`] = e.target.value;
-        localStorage.setItem('surveyData', JSON.stringify(responses));
+    function renderStep() {
+      stepContainer.innerHTML = '';
+      // Шаг -1: ввод имени
+      if (currentStep === -1) {
+        sectionHeader.textContent = 'Введите ваше имя';
+        const fld = document.createElement('fieldset');
+        fld.className = 'mb-4';
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.required = true;
+        inp.placeholder = 'Ваше имя';
+        inp.value = userName;
+        inp.className = 'w-full px-4 py-2 border rounded';
+        inp.oninput = e => userName = e.target.value.trim();
+        fld.appendChild(inp);
+        stepContainer.appendChild(fld);
+        prevBtn.classList.add('hidden');
+        nextBtn.classList.toggle('hidden', false);
+        submitBtn.classList.add('hidden');
         updateProgress();
+        return;
+      }
+
+      const total = questions.length;
+      const sectionNum = Math.floor(currentStep / 10) + 1;
+      sectionHeader.textContent = `Секция ${sectionNum} из ${Math.ceil(total/10)}`;
+
+      const { id: qid, text, type, options } = questions[currentStep];
+      const fld = document.createElement('fieldset');
+      fld.className = 'mb-4';
+
+      const legend = document.createElement('legend');
+      legend.className = 'text-lg font-medium mb-2';
+      legend.textContent = text;
+      fld.appendChild(legend);
+
+      // TEXT
+      if (type === 'text') {
+        const ta = document.createElement('textarea');
+        ta.rows = 3; ta.required = true;
+        ta.name = `q_${qid}`;
+        ta.placeholder = 'Введите ответ...';
+        ta.value = responses[qid]?.answer_text || '';
+        ta.className = 'w-full px-4 py-2 border rounded';
+        ta.oninput = e => {
+          responses[qid] = { question_id: qid, type, answer_text: e.target.value };
+          updateProgress();
+        };
+        fld.appendChild(ta);
+      }
+      // SINGLE
+      else if (type === 'single') {
+        options.forEach(opt => {
+          const label = document.createElement('label');
+          label.className = 'flex items-center mb-2';
+          const inp = document.createElement('input');
+          inp.type = 'radio'; inp.name = `q_${qid}`;
+          inp.value = opt.id; inp.required = true;
+          inp.checked = responses[qid]?.answer_option_ids?.[0] === opt.id;
+          inp.className = 'mr-3 accent-primary';
+          inp.onchange = () => {
+            responses[qid] = {
+              question_id: qid,
+              type,
+              answer_option_ids: [opt.id]
+            };
+            updateProgress();
+          };
+          label.append(inp, document.createTextNode(opt.text));
+          fld.appendChild(label);
+        });
+      }
+      // MULTIPLE
+      else if (type === 'multiple') {
+        options.forEach(opt => {
+          const label = document.createElement('label');
+          label.className = 'flex items-center mb-2';
+          const inp = document.createElement('input');
+          inp.type = 'checkbox'; inp.name = `q_${qid}_${opt.id}`;
+          inp.value = opt.id;
+          inp.checked = responses[qid]?.answer_option_ids?.includes(opt.id);
+          inp.className = 'mr-3 accent-primary';
+          inp.onchange = () => {
+            let arr = responses[qid]?.answer_option_ids || [];
+            if (inp.checked) arr.push(opt.id);
+            else arr = arr.filter(v => v !== opt.id);
+            responses[qid] = { question_id: qid, type, answer_option_ids: arr };
+            updateProgress();
+          };
+          label.append(inp, document.createTextNode(opt.text));
+          fld.appendChild(label);
+        });
+      }
+
+      stepContainer.appendChild(fld);
+      prevBtn.classList.toggle('hidden', currentStep <= -1);
+      nextBtn.classList.toggle('hidden', currentStep >= total - 1);
+      submitBtn.classList.toggle('hidden', currentStep < total - 1);
+      updateProgress();
+    }
+
+    function updateProgress() {
+      let answered = 0;
+      if (userName) answered++;
+      questions.forEach(q => {
+        const r = responses[q.id];
+        if (r) {
+          if (r.type === 'text' && r.answer_text.trim()) answered++;
+          if (r.type === 'single' && r.answer_option_ids?.length) answered++;
+          if (r.type === 'multiple' && r.answer_option_ids?.length) answered++;
+        }
+      });
+      const total = questions.length + 1;
+      const pct = Math.round((answered / total) * 100);
+      progressBar.style.width = pct + '%';
+    }
+
+    function nextStep() {
+      // валидация текущего
+      if (!form.reportValidity()) return;
+      currentStep++;
+      renderStep();
+    }
+
+    function prevStep() {
+      currentStep--;
+      renderStep();
+    }
+
+    form.onsubmit = async e => {
+      e.preventDefault();
+      if (!userName) { alert('Введите имя'); return; }
+      // валидация последнего
+      if (!form.reportValidity()) return;
+
+      const payload = {
+        name: userName,
+        answers: Object.values(responses)
       };
-      fieldset.appendChild(textarea);
-    }
-    else if (type === 'single') {
-      options.forEach((opt, idx) => {
-        const label = document.createElement('label');
-        label.className = 'flex items-center mb-2 cursor-pointer';
 
-        const input = document.createElement('input');
-        input.type = 'radio';
-        input.name = `question_${currentStep}`;
-        input.value = opt;
-        input.required = true;
-        input.checked = responses[`question_${currentStep}`] === opt;
-        input.className = 'mr-3 accent-primary';
-        input.onchange = (e) => {
-          responses[`question_${currentStep}`] = e.target.value;
-          localStorage.setItem('surveyData', JSON.stringify(responses));
-          updateProgress();
-        };
+      try {
+        const res = await fetch(`${API}/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert('Анкета сохранена');
+          localStorage.removeItem('surveyData');
+          window.location.reload();
+        } else throw new Error();
+      } catch {
+        alert('Ошибка отправки');
+      }
+    };
 
-        const span = document.createElement('span');
-        span.textContent = opt;
-        span.className = 'text-gray-800 dark:text-gray-100';
-
-        label.appendChild(input);
-        label.appendChild(span);
-        fieldset.appendChild(label);
-      });
-    }
-    else if (type === 'multiple') {
-      options.forEach((opt, idx) => {
-        const label = document.createElement('label');
-        label.className = 'flex items-center mb-2 cursor-pointer';
-
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.name = `question_${currentStep}_${idx}`;
-        input.value = opt;
-        input.checked = Array.isArray(responses[`question_${currentStep}`]) && responses[`question_${currentStep}`].includes(opt);
-        input.className = 'mr-3 accent-primary';
-        input.onchange = () => {
-          let arr = Array.isArray(responses[`question_${currentStep}`]) ? responses[`question_${currentStep}`] : [];
-          if (input.checked) {
-            arr.push(opt);
-          } else {
-            arr = arr.filter(v => v !== opt);
-          }
-          responses[`question_${currentStep}`] = arr;
-          localStorage.setItem('surveyData', JSON.stringify(responses));
-          updateProgress();
-        };
-
-        const span = document.createElement('span');
-        span.textContent = opt;
-        span.className = 'text-gray-800 dark:text-gray-100';
-
-        label.appendChild(input);
-        label.appendChild(span);
-        fieldset.appendChild(label);
-      });
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
     }
 
-    stepContainer.appendChild(fieldset);
-
-    prevBtn.classList.toggle('hidden', currentStep === 0);
-    nextBtn.classList.toggle('hidden', currentStep === questions.length - 1);
-    submitBtn.classList.toggle('hidden', currentStep !== questions.length - 1);
-
-    updateProgress();
-  }
-
-  function updateProgress() {
-    let answeredCount = 0;
-    questions.forEach((q, idx) => {
-      const key = `question_${idx}`;
-      const resp = responses[key];
-      if (q.type === 'text' || q.type === 'single') {
-        if (resp && resp.toString().trim()) answeredCount++;
-      } else if (q.type === 'multiple') {
-        if (Array.isArray(resp) && resp.length > 0) answeredCount++;
-      }
-    });
-    const percent = Math.round((answeredCount / questions.length) * 100);
-    progressBar.style.width = percent + '%';
-  }
-
-  function nextStep() {
-    const currentKey = `question_${currentStep}`;
-    const currentQuestion = questions[currentStep];
-    if (currentQuestion.type === 'text') {
-      const textarea = stepContainer.querySelector(`[name="${currentKey}"]`);
-      if (!textarea.reportValidity()) return;
-    } else if (currentQuestion.type === 'single') {
-      const checked = stepContainer.querySelector(`input[name="${currentKey}"]:checked`);
-      if (!checked) {
-        alert('Пожалуйста, выберите один из вариантов.');
-        return;
-      }
-    } else { // multiple
-      const anyChecked = questions[currentStep].options.some((opt, i) =>
-              stepContainer.querySelector(`input[name="${currentKey}_${i}"]:checked`)
-      );
-      if (!anyChecked) {
-        alert('Пожалуйста, выберите хотя бы один вариант.');
-        return;
-      }
-    }
-    currentStep++;
-    renderStep();
-  }
-
-  function prevStep() {
-    currentStep--;
-    renderStep();
-  }
-
-  form.onsubmit = function(e) {
-    e.preventDefault();
-    const currentKey = `question_${currentStep}`;
-    const currentQuestion = questions[currentStep];
-    if (currentQuestion.type === 'text') {
-      const textarea = stepContainer.querySelector(`[name="${currentKey}"]`);
-      if (!textarea.reportValidity()) return;
-    } else if (currentQuestion.type === 'single') {
-      const checked = stepContainer.querySelector(`input[name="${currentKey}"]:checked`);
-      if (!checked) {
-        alert('Пожалуйста, выберите один из вариантов.');
-        return;
-      }
-    } else {
-      const anyChecked = questions[currentStep].options.some((opt, i) =>
-              stepContainer.querySelector(`input[name="${currentKey}_${i}"]:checked`)
-      );
-      if (!anyChecked) {
-        alert('Пожалуйста, выберите хотя бы один вариант.');
-        return;
-      }
-    }
-
-    console.log('Ответы анкеты:', responses);
-    alert('Спасибо за заполнение анкеты!');
-    localStorage.removeItem('surveyData');
-    form.reset();
-    currentStep = 0;
-    renderStep();
-  };
-
-  function toggleTheme() {
-    document.documentElement.classList.toggle('dark');
-  }
-
-  renderStep();
-</script>
+    window.addEventListener('DOMContentLoaded', loadQuestions);
+    prevBtn.addEventListener('click', prevStep);
+    nextBtn.addEventListener('click', nextStep);
+  </script>
 </body>
 </html>
+```
